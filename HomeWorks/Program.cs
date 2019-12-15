@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace HomeWorks
@@ -8,9 +10,7 @@ namespace HomeWorks
     {
         static void Main(string[] args)
         {
-            var processor = new ArrayProcessor();
-            Console.WriteLine("B: [{0}]", string.Join(", ", processor.Arr));
-            processor.Var6_PrintElementsOccuredMoreThanOnce();
+            new InputProcessor().Var1_GetLongestAndShortestStringsFromInput();
         }
     }
 
@@ -128,6 +128,60 @@ namespace HomeWorks
             var temp = arr[firstIndex];
             arr[firstIndex] = arr[secondIndex];
             arr[secondIndex] = temp;
+        }
+    }
+
+    class InputProcessor
+    {
+        public void Var1_GetLongestAndShortestStringsFromInput()
+        {
+            var n = ReadNumberOfLinesFromConsole();
+            var list = new List<string>();
+            for (int i = 0; i < n; i++)
+            {
+                list.Add(Console.ReadLine());
+            }
+
+            var sortedList = list.OrderBy(x => x.Length).Reverse().ToList();
+            Console.WriteLine($"Longest string is: {sortedList[0]}");
+            Console.WriteLine($"Shortest string is: {sortedList[^1]}");
+        }
+
+        private static int ReadNumberOfLinesFromConsole()
+        {
+            var n = 0;
+            while (true)
+            {
+                Console.Write("Enter a number of lines to read:");
+                if (int.TryParse(Console.ReadLine(), out n))
+                {
+                    break;
+                }
+
+                Console.WriteLine("Please enter a valid integer number!");
+            }
+
+            return n;
+        }
+    }
+
+    class FileUtils
+    {
+        public static void PrintAllFilesInDirectory(string path)
+        {
+            var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                var attr = File.GetAttributes(file);
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    PrintAllFilesInDirectory(file);
+                }
+                else
+                {
+                    Console.WriteLine(file);
+                }
+            }
         }
     }
 }
